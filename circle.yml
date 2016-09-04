@@ -9,8 +9,9 @@ machine:
 dependencies:
   override:
     - docker --version
-    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- ${DOCKER_ENGINE_VERSION}
-    - docker version
+    - sudo curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- ${DOCKER_ENGINE_VERSION}
+    - docker --version
+    - docker-compose --version
     - pip install -I docker-compose==${DOCKER_COMPOSE_VERSION}
     - docker-compose --version
     - docker-compose run composer install --no-interaction --no-scripts
