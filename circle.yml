@@ -23,6 +23,7 @@ test:
 
 deployment:
   hub:
+    branch: /.*/
     commands:
       # Remove dev dependencies
       - docker-compose run composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
