@@ -20,7 +20,10 @@ The aim of this repo is to setup a CI pipeline to test and build a sample applic
 - `docker-compose.yml` The Docker Compose config file.
 - `Dockerfile` This Dockerfile is used by the CI server to build an image for the app.
 
-## Travis CI
+## Travis CI [![Build Status](https://travis-ci.org/diarmuidie/docker-ci-examples.svg?branch=master)](https://travis-ci.org/diarmuidie/docker-ci-examples)
+
+Make sure you have setup the `DOCKER_USERNAME` and `DOCKER_PASSWORD` environment variables in Travis so that Travis can push the built images to Docker Hub:
+![Travis ENV Config](https://cloud.githubusercontent.com/assets/707037/18232505/bdc084de-72c8-11e6-9759-3265dcc0a033.png)
 
 #### The Config file
 
@@ -28,7 +31,9 @@ The aim of this repo is to setup a CI pipeline to test and build a sample applic
 - **language** Change this to whatever language your app is written in.
 - **services** Selecting Docker lets Travis pre-install the Docker Engine.
 - **env** Define some ENV options to make the file easier to read/DRY.
-- **before_install**
+- **before_install** Install test requirements.
+- **script** This is where tests are run.
+- **after_success** Build the production image, tag and push to [Docker Hub](https://hub.docker.com/r/diarmuidie/travis-docker-ci-example/).
 
 ## Circle CI
 

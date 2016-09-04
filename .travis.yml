@@ -13,10 +13,10 @@ env:
 before_install:
   - sudo apt-get update
 
-  # Install Docker Engine
+  # Install a specific version of Docker Engine
   - sudo apt-get -y --force-yes -o Dpkg::Options::="--force-confnew" install docker-engine=${DOCKER_ENGINE_VERSION}
 
-  # Install Docker Compose
+  # Install a specific version of Docker Compose
   - sudo rm /usr/local/bin/docker-compose;
     curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose;
     chmod +x docker-compose;
@@ -49,4 +49,4 @@ after_success:
 
   # Push the images to Docker Hub
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push diarmuidie/travis-docker-ci-example;
+    docker push ${DOCKER_IMAGE};
