@@ -22,8 +22,8 @@ The aim of this repo is to setup a CI pipeline to test and build a sample applic
 
 ## Travis CI [![Build Status](https://travis-ci.org/diarmuidie/docker-ci-examples.svg?branch=master)](https://travis-ci.org/diarmuidie/docker-ci-examples)
 
-Make sure you have setup the `DOCKER_UUSERNAME` and `DOCKER_PASSWORD` environment variables in Travis so that Travis can push the built images to Docker Hub:
-
+Make sure you have setup the `DOCKER_USERNAME` and `DOCKER_PASSWORD` environment variables in Travis so that Travis can push the built images to Docker Hub:
+![Travis ENV Config](https://cloud.githubusercontent.com/assets/707037/18232505/bdc084de-72c8-11e6-9759-3265dcc0a033.png)
 
 #### The Config file
 
