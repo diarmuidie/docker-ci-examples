@@ -9,10 +9,7 @@ machine:
 dependencies:
   override:
     - docker version
-    - sudo curl -L -o /usr/bin/docker 'http://s3-external-1.amazonaws.com/circle-downloads/docker-1.10.0-circleci'
-    - sudo chmod 0755 /usr/bin/docker
-    - sudo sed -i -e 's/ --userland-proxy=false//' /etc/default/docker
-    - sudo sed -i -e 's/exec "$DOCKER" daemon $DOCKER_OPTS/exec "$DOCKER" --daemon $DOCKER_OPTS/' /etc/init/docker.conf
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- ${DOCKER_ENGINE_VERSION}
     - docker version
     - sudo pip install --upgrade docker-compose==${DOCKER_COMPOSE_VERSION}
     - docker-compose run composer install --no-interaction --no-scripts
