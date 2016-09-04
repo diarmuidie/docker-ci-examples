@@ -1,0 +1,45 @@
+machine:
+  services:
+    - docker
+  environment:
+    DOCKER_ENGINE_VERSION: 1.10.0
+    DOCKER_COMPOSE_VERSION: 1.8.0
+    DOCKER_IMAGE: diarmuidie/circleci-docker-ci-example
+
+dependencies:
+  override:
+    - docker version
+    - sudo curl -L -o /usr/bin/docker 'http://s3-external-1.amazonaws.com/circle-downloads/docker-${DOCKER_ENGINE_VERSION}-circleci'
+    - sudo chmod 0755 /usr/bin/docker
+    - sudo sed -i -e 's/ --userland-proxy=false//' /etc/default/docker
+    - sudo sed -i -e 's/exec "$DOCKER" daemon $DOCKER_OPTS/exec "$DOCKER" --daemon $DOCKER_OPTS/' /etc/init/docker.conf
+    - docker version
+    - sudo pip install --upgrade docker-compose==${DOCKER_COMPOSE_VERSION}
+    - docker-compose run composer install --no-interaction --no-scripts
+
+test:
+  override:
+    - docker-compose run php vendor/bin/phpunit
+
+deployment:
+  hub:
+    commands:
+      # Remove dev dependencies
+      - docker-compose run composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
+
+      # Tag the docker images using the commit hash
+      - docker build --tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} ./;
+
+      # Tag docker image as 'latest' if it is the master branch
+      - if [ "$CIRCLE_BRANCH" == "master" ]; then
+            docker tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} ${DOCKER_IMAGE}:latest;
+        fi;
+
+      # Tag docker image with the git tag
+      - if [ ! -z  "$CIRCLE_TAG" ]; then
+            docker tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} ${DOCKER_IMAGE}:${CIRCLE_TAG};
+        fi;
+
+      # Push the images to Docker Hub
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        docker push ${DOCKER_IMAGE};
