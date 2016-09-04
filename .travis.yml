@@ -1,0 +1,52 @@
+sudo: required
+
+language: php
+
+services:
+  - docker
+
+env:
+  DOCKER_ENGINE_VERSION: 1.12.0-0~trusty
+  DOCKER_COMPOSE_VERSION: 1.8.0
+  DOCKER_IMAGE: diarmuidie/travis-docker-ci-example
+
+before_install:
+  - sudo apt-get update
+
+  # Install Docker Engine
+  - sudo apt-get -y --force-yes -o Dpkg::Options::="--force-confnew" install docker-engine=${DOCKER_ENGINE_VERSION}
+
+  # Install Docker Compose
+  - sudo rm /usr/local/bin/docker-compose;
+    curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose;
+    chmod +x docker-compose;
+    sudo mv docker-compose /usr/local/bin
+
+before_script:
+  # Install Composer
+  - docker-compose run composer install --no-interaction --no-scripts
+
+script:
+  # Use Docker Compose to run your tests here (PHPUnit, PHPmd, Behat, PHPcs etc..)
+  - docker-compose run php vendor/bin/phpunit
+
+after_success:
+  # Remove dev dependencies
+  - docker-compose run composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
+
+  # Tag the docker images using the commit hash
+  - docker build --tag ${DOCKER_IMAGE}:${TRAVIS_COMMIT} ./;
+
+  # Tag docker image as 'latest' if it is the master branch
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+        docker tag ${DOCKER_IMAGE}:${TRAVIS_COMMIT} ${DOCKER_IMAGE}:latest;
+    fi;
+
+  # Tag docker image with the git tag
+  - if [ ! -z  "$TRAVIS_TAG" ]; then
+        docker tag ${DOCKER_IMAGE}:${TRAVIS_COMMIT} ${DOCKER_IMAGE}:${TRAVIS_TAG};
+    fi;
+
+  # Push the images to Docker Hub
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push diarmuidie/travis-docker-ci-example;

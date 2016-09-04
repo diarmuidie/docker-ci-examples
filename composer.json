@@ -1,0 +1,11 @@
+{
+    "name": "diarmuid/travis-docker-ci-example",
+    "license": "MIT",
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {"Diarmuidie\\": "src"}
+    }
+}

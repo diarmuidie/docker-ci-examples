@@ -1,0 +1,12 @@
+version: '2'
+services:
+  php:
+    image: php:7.0-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+  composer:
+    image: composer/composer:1.1-alpine
+    volumes_from:
+      - php
+    command: install
