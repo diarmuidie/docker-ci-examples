@@ -3,7 +3,7 @@ machine:
     - docker
   environment:
     DOCKER_ENGINE_VERSION: 1.10.0
-    DOCKER_COMPOSE_VERSION: 1.8.0
+    DOCKER_COMPOSE_VERSION: 1.7.1
     DOCKER_IMAGE: diarmuidie/circleci-docker-ci-example
 
 dependencies:
@@ -12,6 +12,7 @@ dependencies:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- ${DOCKER_ENGINE_VERSION}
     - docker version
     - sudo pip install --upgrade docker-compose==${DOCKER_COMPOSE_VERSION}
+    - docker-compose --version
     - docker-compose run composer install --no-interaction --no-scripts
 
 test:
