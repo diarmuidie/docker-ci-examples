@@ -49,4 +49,4 @@ after_success:
 
   # Push the images to Docker Hub
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push diarmuidie/travis-docker-ci-example;
+    docker push ${DOCKER_IMAGE};
